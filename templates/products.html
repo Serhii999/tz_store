@@ -93,16 +93,21 @@
 
                 <hr style="background-color: #e4b101">
             {% endfor %}
+
  <nav aria-label="Page navigation example" style="min-height: 100%">
+
   <ul class="pagination">
    {% if page_obj.has_previous %}
-    <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+    <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}&category_id={{ request.GET.category_id }}">
+         Previous</a></li>
     {% endif %}
-      <li class="page-item"><a class="page-link" href="?page=1">1</a></li>
+      <li class="page-item"><a class="page-link" href="?page=1&category_id={{ request.GET.category_id }}">1</a></li>
       {% if page_obj.has_next %}
-    <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
-      <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last</a></li>
+
+    <li class="page-item"><a  class="page-link"  href="?page={{ page_obj.next_page_number }}&category_id={{ request.GET.category_id }}">Next</a></li>
+      <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}&category_id={{ request.GET.category_id }}">Last</a></li>
   {% endif %}
+
   </ul>
 
 </nav>
