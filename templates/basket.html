@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="alert alert-success" role="alert">
+        <div class="d-flex">
+            <div class="p-2">
+                <h4 class="alert-heading">Корзина покупок</h4>
+            </div>
+            <div class="ml-auto p-2">
+                <form method="get" action="{% url 'main' %}">
+                    <button type="submit" class="btn btn-success" value="Base page">Вернуться на главную страницу
+                    </button>
+                </form>
+            </div>
+        </div>
+        <p>Здесь отображаются добавленные в корзину товары</p>
+
+    </div>
+    <div style="background-color: mediumseagreen">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-danger" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+    </div>
+    {% for product in object_list %}
+
+                    <div style="color: whitesmoke">
+
+                            <div class="p-2">
+                                <img src="/media/{{ product.product.image }}" width="250" height="200" >
+                            </div>
+                            <div class="p-2">
+                                <h2 style="color: #e4b101"> Товар: {{ product.product.title }}</h2>
+                                 <p>Категория: {{ product.product.category.title }}</p>
+                                <p>Цена: {{ product.product.price }}</p>
+                                <p>В корзине: {{ product.quantity }}</p>
+                                <p>Цена за этот товар: {{ product.get_price }}</p>
+          <p>
+                                     <form method="post" action="{% url 'delete_from_basket' product.pk %}">
+                                      {% csrf_token %}
+
+                                <button type="submit" class="btn btn-warning" value="Update"> Удалить товар</button>
+                            </form>
+
+
+
+
+    {% endfor %}
+ <div class="p-2">
+     {% if request.user.is_authenticated and not request.user.is_superuser %}
+
+        {% if object_list %}
+        <form method="get" action= "{% url 'order' %}">
+
+            <input  type="hidden" name="customer_id" value="{{ request.user.id }}">
+                <button type="submit" class="btn btn-warning" value="Update"> Создать заказ </button>
+            </form>
+
+            <br>
+
+
+    {% endif %}
+ {% endif %}
+    </div>
+     <nav aria-label="Page navigation example" style="min-height: 100%">
+  <ul class="pagination">
+   {% if page_obj.has_previous %}
+    <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+    {% endif %}
+      <li class="page-item"><a class="page-link" href="?page=1">1</a></li>
+      {% if page_obj.has_next %}
+    <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+      <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last</a></li>
+  {% endif %}
+  </ul>
+
+</nav>
+
+{% endblock %}

@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% if request.user.is_authenticated and not request.user.is_superuser %}
+     <div class="alert alert-warning" role="alert">
+                <div class="d-flex">
+                    <div class="p-2">Приветствую, {{ request.user }}!</div>
+                    <div class="ml-auto p-2">
+                        <form method="get" action="{% url 'logout' %}">
+                            <button type="submit" class="btn btn-outline-danger" value="Logout"> Выйти из
+                                аккаунта
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+      {% elif request.user.is_superuser %}
+           <div class="alert alert-warning" role="alert">
+                <div class="d-flex">
+                    <div class="p-2">Аккаунт администратора - {{ request.user }}!</div>
+                    <div class="ml-auto p-2">
+                         <form method="get" action="{% url 'logout' %}">
+                            <button type="submit" class="btn btn-outline-danger" value="Logout"> Выйти из
+                                аккаунта
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+        <a href="{% url 'login' %}">Login</a>
+        <br>
+        <a href="{% url 'register' %}">Registration</a>
+        <br>
+        <br>
+
+{% endif %}
+     <br>
+        <br>
+    <a href="{% url 'main' %}">На главную</a>
+
+
+
+                    <div style="color: whitesmoke">
+                        <div class="d-flex">
+                            <div class="p-2">
+                                <img src="/media/{{ object.image }}" width="250" height="200" >
+                            </div>
+                            <div class="p-2">
+                                <h2 style="color: #e4b101">{{ object.title }}</h2>
+                                 <p>Категория: {{ object.category.title }}</p>
+                                <p>В наличии: {{ object.quantity }}</p>
+                                <p>Цена товара: {{ object.price}} ₴</p>
+                                <p>Описание: {{ object.description }}</p>
+                                 <p>
+                                <form method="get" action="{% url 'products'  %}">
+                                    <input  type="hidden" name="category_id" value="{{ object.category.pk }}">
+                                    <button type="submit" class="btn btn-warning" value="Update"> На страницу товаров </button>
+                        </form></p>  <div>
+
+                            </div></p>
+                                <p> {% if request.user.is_authenticated and not request.user.is_superuser %}
+ <a href="{% url 'cart_add' object.id %}">Добавить в корзину</a>
+                                    </p>
+      {% endif %}
+
+
+
+
+<br>
+
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                <hr style="background-color: #e4b101">
+
+
+{% endblock %}

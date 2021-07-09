@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    {% load cart_tag %}
+
+
+
+    <div class="alert alert-success" role="alert">
+        <div class="d-flex">
+            <div class="p-2">
+                <h4 class="alert-heading">Корзина покупок</h4>
+            </div>
+            <div class="ml-auto p-2">
+                <form method="get" action="{% url 'main' %}">
+                    <button type="submit" class="btn btn-success" value="Base page">Вернуться на главную страницу
+                    </button>
+                </form>
+            </div>
+        </div>
+        <p>Здесь отображаются добавленные в корзину товары</p>
+
+    </div>
+    <div style="background-color: mediumseagreen">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-danger" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+    </div>
+
+
+     {% for key,value in request.session.cart.items %}
+
+                    <div style="color: whitesmoke">
+
+                            <div class="p-2">
+                                <img src="/media/{{value.image}}" width="250" height="200" >
+                            </div>
+                            <div class="p-2">
+                                <h2 style="color: #e4b101"> Товар: {{value.title}}</h2>
+                                <p>Цена: {{value.price}} </p>
+                                <p>В корзине: {{value.quantity}}</p>
+                                <p>Цена за этот товар: {{ value.price|multiply:value.quantity }}</p>
+                                <p><a href="{% url 'item_clear' value.product_id %}">Удалить товар</a></p>
+                            {% endfor %}
+
+    <a href="{% url "orders:order_create" %}" class="button">
+    Создать заказ
+</a>
+<a href="{% url 'cart_clear' %}">Очистить корзину</a>
+
+{% endblock %}

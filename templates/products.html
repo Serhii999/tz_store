@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% if request.user.is_authenticated and not request.user.is_superuser %}
+     <div class="alert alert-warning" role="alert">
+                <div class="d-flex">
+                    <div class="p-2">Приветствую, {{ request.user }}!</div>
+                    <div class="ml-auto p-2">
+                        <form method="get" action="{% url 'logout' %}">
+                            <button type="submit" class="btn btn-outline-danger" value="Logout"> Выйти из
+                                аккаунта
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+      {% elif request.user.is_superuser %}
+           <div class="alert alert-warning" role="alert">
+                <div class="d-flex">
+                    <div class="p-2">Аккаунт администратора - {{ request.user }}!</div>
+                    <div class="ml-auto p-2">
+                         <form method="get" action="{% url 'logout' %}">
+                            <button type="submit" class="btn btn-outline-danger" value="Logout"> Выйти из
+                                аккаунта
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+        <a href="{% url 'login' %}">Login</a>
+        <br>
+        <a href="{% url 'register' %}">Registration</a>
+        <br>
+        <br>
+
+{% endif %}
+     <br>
+        <br>
+    <a href="{% url 'main' %}">На главную</a>
+
+
+{% for product in object_list %}
+
+                    <div style="color: whitesmoke">
+                        <div class="d-flex">
+                            <div class="p-2">
+                                <img src="/media/{{ product.image }}" width="185" height="150" >
+                            </div>
+                            <div class="p-2">
+                                <h2 style="color: #e4b101">{{ product.title }}</h2>
+                                 <p>Категория: {{ product.category.title }}</p>
+                                <p>В наличии: {{ product.quantity }}</p>
+                                <p>Цена товара: {{ product.price}} ₴</p>
+                                <p>  <div>
+
+                                <form method="get" action="{% url 'product_detail' product.pk  %}">
+
+                                    <button type="submit" class="btn btn-warning" value="Update">
+                                        Детальнее о товаре </button>
+                        </form>
+                            </div></p>
+                                <p> {% if request.user.is_authenticated and not request.user.is_superuser %}
+                                    <a href="{% url 'cart_add' product.id %}">Добавить в корзину</a>
+
+
+                              {% endif %}
+<p> {% if request.user.is_superuser %}</p>
+
+                            <form method="get" action="{% url 'update_product' product.pk %}">
+                                <input  type="hidden" name="product_id" value="{{ product.pk }}">
+
+                                <button type="submit" class="btn btn-warning" value="Update"> Обновить товар</button>
+                            </form>
+                             <p>
+                                     <form method="post" action="{% url 'product_delete' product.pk %}">
+                                      {% csrf_token %}
+                                        <input  type="hidden" name="product_id" value="{{ product.pk }}">
+
+                                <button type="submit" class="btn btn-warning" value="Update"> Удалить товар</button>
+                            </form>
+                                     </p>
+                            {% endif %}
+
+
+<br>
+
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                <hr style="background-color: #e4b101">
+            {% endfor %}
+ <nav aria-label="Page navigation example" style="min-height: 100%">
+  <ul class="pagination">
+   {% if page_obj.has_previous %}
+    <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+    {% endif %}
+      <li class="page-item"><a class="page-link" href="?page=1">1</a></li>
+      {% if page_obj.has_next %}
+    <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+      <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last</a></li>
+  {% endif %}
+  </ul>
+
+</nav>
+{% endblock %}

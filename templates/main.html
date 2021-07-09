@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+{% block content %}
+  <div style="color: #e4b101; position: center; text-align: center">
+      <h1>Категории товаров</h1></div>
+    <br>
+
+  {% if request.user.is_authenticated and not request.user.is_superuser %}
+     <div class="alert alert-warning" role="alert">
+                <div class="d-flex">
+                    <div class="p-2">Приветствую, {{ request.user }}!</div>
+                    <div class="ml-auto p-2">
+                        <form method="get" action="{% url 'logout' %}">
+                            <button type="submit" class="btn btn-outline-danger" value="Logout"> Выйти из
+                                аккаунта
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+      {% elif request.user.is_superuser %}
+           <div class="alert alert-warning" role="alert">
+                <div class="d-flex">
+                    <div class="p-2">Аккаунт администратора - {{ request.user }}!</div>
+                    <div class="ml-auto p-2">
+                         <form method="get" action="{% url 'logout' %}">
+                            <button type="submit" class="btn btn-outline-danger" value="Logout"> Выйти из
+                                аккаунта
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+        <a href="{% url 'login' %}">Login</a>
+        <br>
+        <a href="{% url 'register' %}">Registration</a>
+        <br>
+        <br>
+
+{% endif %}
+    {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-danger" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    <br>
+    <div class="p-2">
+     {% if request.user.is_superuser %}
+
+
+        <form method="get" action= "{% url 'category_create' %}">
+
+
+                <button type="submit" class="btn btn-warning" value="Update"> Создать категорию </button>
+            </form>
+
+            <br>
+
+
+    {% endif %}
+    </div>
+     <div class="p-2">
+     {% if request.user.is_authenticated and not request.user.is_superuser %}
+
+
+
+           <form method="get" action= "{% url 'cart_detail' %}">
+
+
+                <button type="submit" class="btn btn-warning" value="Update"> Моя корзина </button>
+            </form>
+
+            <br>
+
+
+    {% endif %}
+    </div>
+    {% for category in object_list %}
+
+                    <div style="color: whitesmoke">
+                        <div class="d-flex">
+                            <div class="p-2">
+                                <img src="/media/{{ category.picture }}" width="185" height="150">
+                            </div>
+                            <div class="p-2">
+                                <h2 style="color: #e4b101">{{ category.title }}</h2>
+                                <p>Описание: {{ category.description}}</p>
+                                <p>
+                                <form method="get" action="{% url 'products'  %}">
+                                    <input  type="hidden" name="category_id" value="{{ category.pk }}">
+                                    <button type="submit" class="btn btn-warning" value="Update"> Товары категории </button>
+                        </form></p>
+                                 {% if request.user.is_superuser  %}
+                                <p> <form method="get" action= "{% url 'product_create' category.pk %}">
+
+                <input  type="hidden" name="category_id" value="{{ category.pk }}">
+                <button type="submit" class="btn btn-warning" value="Update"> Добавить товар в категорию </button>
+            </form>
+                                     <p>
+                            <form method="get" action="{% url 'update_category' category.pk %}">
+                                <input  type="hidden" name="category_id" value="{{ category.pk }}">
+
+                                <button type="submit" class="btn btn-warning" value="Update"> Обновить категорию</button>
+                            </form>
+                        </p>
+                                     <p>
+                                     <form method="post" action="{% url 'category_delete' category.pk %}">
+                                      {% csrf_token %}
+                                        <input  type="hidden" name="category_id" value="{{ category.pk }}">
+
+                                <button type="submit" class="btn btn-warning" value="Update"> Удалить категорию</button>
+                            </form>
+                                     </p>
+                                {% endif %}
+                                </p>
+
+
+
+
+                            </div>
+                            <div>
+
+                            </div>
+                            <br>
+
+
+                        </div>
+                    </div>
+
+                <hr style="background-color: #e4b101">
+            {% endfor %}
+ <nav aria-label="Page navigation example" style="min-height: 100%">
+  <ul class="pagination">
+   {% if page_obj.has_previous %}
+    <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+    {% endif %}
+      <li class="page-item"><a class="page-link" href="?page=1">1</a></li>
+      {% if page_obj.has_next %}
+    <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+      <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last</a></li>
+  {% endif %}
+  </ul>
+
+</nav>
+{% endblock %}
