@@ -47,10 +47,10 @@
                                 <p>Цена за этот товар: {{ value.price|multiply:value.quantity }}</p>
                                 <p><a href="{% url 'item_clear' value.product_id %}">Удалить товар</a></p>
                             {% endfor %}
-
+{% if request.session.cart.items %}
     <a href="{% url "orders:order_create" %}" class="button">
     Создать заказ
 </a>
 <a href="{% url 'cart_clear' %}">Очистить корзину</a>
-
+{% endif %}
 {% endblock %}
